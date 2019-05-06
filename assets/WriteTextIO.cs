@@ -33,19 +33,13 @@ public class WriteTextIO : IWriteTextIO
     }
 
     // Writes to the textfile
-    public void WriteTextFile(byte[] data)
+    public void WriteTextFile(string dataString)
     {
-        // Add some text to file    
+        // Both time and the content of the UDP packet is written to the file   
         string time = DateTime.Now.ToString("T",
                   CultureInfo.CreateSpecificCulture("es-ES"));
-        string text = time + "\n" + Convert2String(data) + "\n";
+        string text  = "Time : " + time + "\n\t Data : " + dataString + "\n";
 
         File.AppendAllText(fileName, text);
-    }
-
-    private string Convert2String(byte[] data)
-    {
-        char[] characters = data.Select(b => (char)b).ToArray();
-        return new string(characters);
     }
 }

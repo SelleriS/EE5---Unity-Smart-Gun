@@ -1,5 +1,5 @@
 ﻿public interface IWriteTextIO
 {
     void CreateFile();
-    void WriteTextFile(byte[] data);
+    void WriteTextFile(string dataString);
 }

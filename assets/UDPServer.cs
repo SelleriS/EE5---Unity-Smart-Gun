@@ -27,8 +27,8 @@ public class UDPServer : MonoBehaviour
     // public
     public string serverIP; //default local
     public int port; // define > init
-    public string lastReceivedUDPPacketString = "";
-    public string dataReceived;
+    public string lastUDPdecoded = "";
+    public string dataString;
     public GameObject prefab;
     public WriteTextIO textIO = new WriteTextIO();
 
@@ -68,7 +68,7 @@ public class UDPServer : MonoBehaviour
         dispatcher.InvokePending();
     }
 
-    // OnGUI
+    // Displays info on the GUI
     void OnGUI()
     {
         Rect rectObj = new Rect(40, 10, 200, 400);
@@ -79,8 +79,8 @@ public class UDPServer : MonoBehaviour
                     + "Server Port : " + port + " \n"
                     + "\nLast client IP : " + lastClientIP + " \n"
                     + "Last client Port : " + lastClientPort + " \n"
-                    + "\nLast Packet: \n" + lastReceivedUDPPacketString
-                    + "\nMessage in hex :\n" + dataReceived
+                    + "\nLast Packet: \n" + lastUDPdecoded
+                    + "\nMessage in hex :\n" + dataString
                 , style);
     }
 
@@ -104,16 +104,14 @@ public class UDPServer : MonoBehaviour
                     Action<IPEndPoint, byte[]> action = new Action<IPEndPoint, byte[]>(CreateScar); //The action is created  
                     dispatcher.Invoke(action, clientEndpoint, data); // The action is send to the dispatcher to be executed in the main thread (UDPServer.Update())
 
-                    textIO.WriteTextFile(data);
-
                     // Convert bytes in a string
-                    string text = Encoding.UTF8.GetString(data);
+                    lastUDPdecoded = Encoding.UTF8.GetString(data);
 
-                    // latest UDPpacket
-                    lastReceivedUDPPacketString = text;
+                    // Gives a hex representation of the data in String form
+                    dataString = ByteArrayToString(data); // gives a hex representation of the data (handy for debugging purposes)
 
-                    // Show the received data in hex
-                    dataReceived = ByteArrayToString(data); // gives a hex representation of the data (handy for debugging purposes)
+                    // Log data in .txt file
+                    textIO.WriteTextFile(dataString);
                 }
             }
             catch (Exception err)
@@ -123,6 +121,7 @@ public class UDPServer : MonoBehaviour
         }
     }
 
+    // Gets local IP adress to be displayed on the GUI
     private static string LocalIPAddress
     {
         get
@@ -139,16 +138,10 @@ public class UDPServer : MonoBehaviour
         }
     }
 
+    // Getter and setter for the clients dictionary (= Hashmap in C#)
     public Dictionary<IPAddress, GameObject> Clients { get => clients; set => clients = value; }
 
-    private static string ByteArrayToHexString(byte[] byteArray)
-    {
-        StringBuilder hex = new StringBuilder(byteArray.Length * 2);
-        foreach (byte b in byteArray)
-            hex.AppendFormat("{0:x2}", b);
-        return hex.ToString();
-    }
-
+    // Converts the byte array into a string
     private static string ByteArrayToString(byte[] byteArray)
     {
         int[] conversionInt = Array.ConvertAll(byteArray, c => (int)c);
@@ -156,6 +149,7 @@ public class UDPServer : MonoBehaviour
         return conversion;
     }
 
+    // Creates a scar gameobject if it does not exist and updates the object with the new data
     private void CreateScar(IPEndPoint clientEndpoint, byte[] data)
     {
         try
