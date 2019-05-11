@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="assets\CameraScript.cs" />
     <Compile Include="assets\Dispatcher.cs" />
+    <Compile Include="assets\DuelGameMode.cs" />
     <Compile Include="assets\IDispatcher.cs" />
     <Compile Include="assets\IWriteTextIO.cs" />
     <Compile Include="assets\UDPServer.cs" />

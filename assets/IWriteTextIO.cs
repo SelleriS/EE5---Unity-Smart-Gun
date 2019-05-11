@@ -1,5 +1,5 @@
 ﻿public interface IWriteTextIO
 {
     void CreateFile();
-    void WriteTextFile(string dataString);
+    void WriteTextFile(string lastClientIP, string dataString);
 }

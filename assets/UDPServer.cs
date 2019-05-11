@@ -31,12 +31,14 @@ public class UDPServer : MonoBehaviour
     public string dataString;
     public GameObject prefab;
     public WriteTextIO textIO = new WriteTextIO();
+    public int maxTimeInactive = 5; // Used to destroy a gameobject if its clients has been inactive for this amount of seconds
 
     private string lastClientIP;
     private int lastClientPort;
     private Dispatcher dispatcher = Dispatcher.Instance;
     private Dictionary<IPAddress, GameObject> clients;
-    private Vector3 lastObjectPos = new Vector3(0f, 0.23f, 0f); // used to display object underneath eachother
+    private Dictionary<IPAddress, DateTime> timestamps;
+    private Vector3 positionOffset = new Vector3(0f, -0.23f, 0f); // used to display object underneath eachother and to check availablility of a position
 
     // start from unity3d
     public void Start()
@@ -53,6 +55,7 @@ public class UDPServer : MonoBehaviour
 
         // define client table
         clients = new Dictionary<IPAddress, GameObject>();
+        timestamps = new Dictionary<IPAddress, DateTime>();
 
         receiveThread = new Thread(
             new ThreadStart(ReceiveData));
@@ -66,6 +69,7 @@ public class UDPServer : MonoBehaviour
     void Update()
     {
         dispatcher.InvokePending();
+        CheckActivityStatus();
     }
 
     // Displays info on the GUI
@@ -95,7 +99,7 @@ public class UDPServer : MonoBehaviour
                 // Bytes received
                 IPEndPoint clientEndpoint = new IPEndPoint(IPAddress.Any, 0);
                 byte[] data = client.Receive(ref clientEndpoint);
-                lastClientIP = clientEndpoint.Address.ToString(); // Improvement: Retrieve IP address of client and store clientIP, magazine IP, ... in a Hashmap
+                lastClientIP = clientEndpoint.Address.ToString();
                 lastClientPort = clientEndpoint.Port;
 
                 if (data.Length == 4) // if the packet received is not equal to 4 bytes (32 bits), the packet is discarded
@@ -111,7 +115,7 @@ public class UDPServer : MonoBehaviour
                     dataString = ByteArrayToString(data); // gives a hex representation of the data (handy for debugging purposes)
 
                     // Log data in .txt file
-                    textIO.WriteTextFile(dataString);
+                    textIO.WriteTextFile(lastClientIP, dataString);
                 }
             }
             catch (Exception err)
@@ -158,21 +162,67 @@ public class UDPServer : MonoBehaviour
             if (!clients.TryGetValue(clientEndpoint.Address, out GameObject weapon))
             {
                 // Create scar gameobject
-                lastObjectPos = lastObjectPos + new Vector3(0f, -0.23f, 0f); // every new gameobject is instantiated 0.5f under the previuous one
-                weapon = Instantiate(prefab, lastObjectPos, Quaternion.identity);
+                weapon = Instantiate(prefab, GetNewPosition(), Quaternion.identity);
                 // Add IPaddress as key and new gameobject as value to the dictionary clients
                 clients.Add(clientEndpoint.Address, weapon);
+                // Add timestamp of last received message to the dictionary timestamps
+                timestamps.Add(clientEndpoint.Address, DateTime.Now);
                 // Modify fields of the new object by the data received by the client
                 weapon.GetComponent<WeaponInteraction>().PacketTranslater(data);
             }
             else
             {
+                // Update weapon with new data
                 weapon.GetComponent<WeaponInteraction>().PacketTranslater(data);
+                // Update timestamp of last received packet
+                timestamps[clientEndpoint.Address] = DateTime.Now;
             }
         }
         catch (Exception err)
         {
             print(err.ToString());
         }
+    }
+
+    private void CheckActivityStatus()
+    {
+        List<IPAddress> toRemove = new List<IPAddress>();
+        foreach(KeyValuePair<IPAddress, DateTime> time in timestamps)
+        {
+            if ((DateTime.Now - time.Value).TotalSeconds > maxTimeInactive) // If there is no contact for more than 5 seconds
+            {
+                toRemove.Add(time.Key);
+            }
+        }
+        foreach (IPAddress IPtoRemove in toRemove)
+        {            if (clients.TryGetValue(IPtoRemove, out GameObject weapon))
+            {
+                clients.Remove(IPtoRemove);
+                timestamps.Remove(IPtoRemove);
+                Destroy(weapon);
+            }
+        }
+    }
+
+    private Vector3 GetNewPosition()
+    {
+        Vector3 newPosition = new Vector3(0, 0, 0);
+        Boolean posAvailable = false;
+        while (!posAvailable)
+        {
+            posAvailable |= clients.Count == 0; // if clients dictionary is empty then posAvailable = true
+            foreach (KeyValuePair<IPAddress, GameObject> weapon in clients)
+            {
+                Vector3 position = weapon.Value.transform.position;
+                if (position == newPosition)
+                {
+                    newPosition += positionOffset;
+                    posAvailable = false;
+                    break;
+                }
+                posAvailable = true;
+            }
+        }
+        return newPosition;
     }
 }
