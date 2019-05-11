@@ -3,12 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * TO DO: Split update in mulitple methods
+ * split class up in Parent and child classes
+ * create interface for WeaponInteraction
+ */
 [System.Serializable]
 public enum SwitchPosition
 {
     SAFE,
     SEMI,
     AUTO
+}
+
+// types of weapons that can be recognized: max. 2 to the power of 6 different weapons
+public enum WeaponType
+{
+    SCAR,
+    FiveSeven,
+    DEMO
 }
 
 public class WeaponInteraction : MonoBehaviour
@@ -18,6 +31,8 @@ public class WeaponInteraction : MonoBehaviour
     public int magazineID;
     public bool magazinePresent;
     public SwitchPosition selectorSwitchPosition;
+    public WeaponType weaponType;
+    private static int weaponTypesBits; // number of bits needed to encode the number of different weapons to recognize
 
     Transform triggerTransform;
     Transform movablePiecesTransform;
@@ -37,6 +52,8 @@ public class WeaponInteraction : MonoBehaviour
         selectorSwitchTransform = transform.Find("Selector Switch").transform;
         magazineObject = transform.Find("Magazine").gameObject;
         selectorSwitchPosition = SwitchPosition.SAFE;
+        int numberOfWeaponTypes = Enum.GetNames(typeof(WeaponType)).Length; // Number of enum elements in WeaponType (= number of different types of weapons)
+        weaponTypesBits = (int) Math.Ceiling(Math.Log(numberOfWeaponTypes, 2)); //log2 of the different number of weapons. Log2 is always rounded up (=Ceiling)
     }
 
     // Update is called once per frame
@@ -82,6 +99,7 @@ public class WeaponInteraction : MonoBehaviour
         byte[] magazineIDValue = new byte[4];
         byte[] flags = new byte[4];
 
+
         // Store data in containers
         Array.Copy(packet, 0, triggerValue, 0, 1); //Copy(Array sourceArray, long sourceIndex, Array destinationArray, long destinationIndex, long length)
         Array.Copy(packet, 1, movablePiecesValue, 0, 1);
@@ -92,11 +110,32 @@ public class WeaponInteraction : MonoBehaviour
         triggerCurrentValue = BitConverter.ToInt32(triggerValue, 0);
         movablePiecesCurrentValue = BitConverter.ToInt32(movablePiecesValue, 0);// BitConverter start reading at a certain index till the end. 
         magazineID = BitConverter.ToInt32(magazineIDValue, 0);
-        int flagInt = BitConverter.ToInt32(flags, 0);
+        byte flagByte = flags[0];
 
-        //BitArray flagBits = new BitArray(flags[0]); <= This is the way to work, but I'm not able to extract bit values from the BitArray
-        magazinePresent = !(flagInt % 2 == 0) ; // Last bit in the flag byte shows the mag status. So, if there is no mag present the value of the flag is even.
+        magazinePresent = !(flagByte % 2 == 0) ; // Last bit in the flag byte shows the mag status. So, if there is no mag present the value of the flag is even.
 
-        selectorSwitchPosition = (SwitchPosition) (flagInt / 2); // bit shift right
+        //UNCOMMENT THESE LINES WHEN DEBUGGING: 
+        //(Because weaponTypesBits becomes 0 due to the fact that the weapon gets destroyed every X seconds that it's inactive)
+        //int numberOfWeaponTypes = Enum.GetNames(typeof(WeaponType)).Length; // Number of enum elements
+        //weaponTypesBits = (int)Math.Ceiling(Math.Log(numberOfWeaponTypes, 2)); //log2 of the different number of weapons. Log2 is always rounded up (=Ceiling)
+
+        byte weaponTypeByte = (byte)(flagByte/Math.Pow(2, 8-weaponTypesBits)); // bit shift right (the amount of bits that can be discarded = 3 + amount of bits that are not used)
+        weaponType = (WeaponType) weaponTypeByte;
+
+        byte switchPositionByte = (byte)(flagByte * Math.Pow(2, weaponTypesBits)); // bit shift left the enough of times to get rid of the used MSB's to encode the weapontype
+        switchPositionByte /= (byte)Math.Pow(2, weaponTypesBits+1); // BSR enough times to set the bits needed to recognize the selector switches position as LSB's
+        selectorSwitchPosition = (SwitchPosition) switchPositionByte;
+    }
+
+    public static WeaponType GetWeaponTypeOutOfData(byte[] packet)
+    {
+        byte[] flags = new byte[4];
+        Array.Copy(packet, 3, flags, 0, 1);
+        byte flagByte = flags[0];
+        int numberOfWeaponTypes = Enum.GetNames(typeof(WeaponType)).Length; // Number of enum elements
+        weaponTypesBits = (int)Math.Ceiling(Math.Log(numberOfWeaponTypes, 2)); //log2 of the different number of weapons. Log2 is always rounded up (=Ceiling)
+        byte weaponTypeByte = (byte)(flagByte / Math.Pow(2, 8 - weaponTypesBits)); // bit shift right (the amount of bits that can be discarded = 3 + amount of bits that are not used)
+
+        return (WeaponType)weaponTypeByte;
     }
 }

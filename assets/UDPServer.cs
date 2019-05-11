@@ -29,7 +29,9 @@ public class UDPServer : MonoBehaviour
     public int port; // define > init
     public string lastUDPdecoded = "";
     public string dataString;
-    public GameObject prefab;
+    public GameObject prefabSCAR;
+    public GameObject prefab57;
+    public GameObject prefabDEMO;
     public WriteTextIO textIO = new WriteTextIO();
     public int maxTimeInactive = 5; // Used to destroy a gameobject if its clients has been inactive for this amount of seconds
 
@@ -43,7 +45,6 @@ public class UDPServer : MonoBehaviour
     // start from unity3d
     public void Start()
     {
-
         // define serverIP
         serverIP = LocalIPAddress;
 
@@ -161,6 +162,21 @@ public class UDPServer : MonoBehaviour
             //If client connects for the first time a new GameObject is made and the sending IPadress is linked together in the dictionary
             if (!clients.TryGetValue(clientEndpoint.Address, out GameObject weapon))
             {
+                GameObject prefab = prefabSCAR; 
+                switch (WeaponInteraction.GetWeaponTypeOutOfData(data))
+                {
+                    case WeaponType.SCAR:
+                        prefab = prefabSCAR;
+                        break;
+
+                    case WeaponType.FiveSeven:
+                        prefab = prefab57;
+                        break;
+
+                    case WeaponType.DEMO:
+                        prefab = prefabDEMO;
+                        break;
+                }
                 // Create scar gameobject
                 weapon = Instantiate(prefab, GetNewPosition(), Quaternion.identity);
                 // Add IPaddress as key and new gameobject as value to the dictionary clients
