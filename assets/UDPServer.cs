@@ -70,7 +70,7 @@ public class UDPServer : MonoBehaviour
     void Update()
     {
         dispatcher.InvokePending();
-        CheckActivityStatus();
+        //CheckActivityStatus();
     }
 
     // Displays info on the GUI
