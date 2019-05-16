@@ -62,11 +62,14 @@
   <ItemGroup>
     <Compile Include="assets\CameraScript.cs" />
     <Compile Include="assets\Dispatcher.cs" />
-    <Compile Include="assets\DuelGameMode.cs" />
     <Compile Include="assets\IDispatcher.cs" />
+    <Compile Include="assets\IWeaponInteraction.cs" />
     <Compile Include="assets\IWriteTextIO.cs" />
     <Compile Include="assets\UDPServer.cs" />
     <Compile Include="assets\WeaponInteraction.cs" />
+    <Compile Include="assets\WeaponInteraction57.cs" />
+    <Compile Include="assets\WeaponInteractionDEMO.cs" />
+    <Compile Include="assets\WeaponInteractionSCAR.cs" />
     <Compile Include="assets\WriteTextIO.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/admin/Documents/Unity/EE5 - unity example/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

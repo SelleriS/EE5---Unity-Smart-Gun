@@ -1318,7 +1318,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6784755091848769890}
-  - component: {fileID: 6784755092146380343}
+  - component: {fileID: 1886490090492261571}
   m_Layer: 0
   m_Name: scar_prefab
   m_TagString: Untagged
@@ -1345,7 +1345,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6784755092146380343
+--- !u!114 &1886490090492261571
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1354,10 +1354,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6784755091848867138}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53c0e41156f660a4caa6335bf7800571, type: 3}
+  m_Script: {fileID: 11500000, guid: ab3755563c39b4808911df6489007349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   triggerCurrentValue: 0
+  weaponType: 0
   movablePiecesCurrentValue: 0
   magazineID: 0
   magazinePresent: 0
