@@ -27,12 +27,10 @@ public class UDPServer : MonoBehaviour
     // public
     public string serverIP; //default local
     public int port; // define > init
-    public string lastUDPdecoded = "";
     public string dataString;
     public GameObject prefabSCAR;
     public GameObject prefab57;
     public GameObject prefabDEMO;
-    public WriteTextIO textIO = new WriteTextIO();
     public int maxTimeInactive = 5; // Used to destroy a gameobject if its clients has been inactive for this amount of seconds
 
     private string lastClientIP;
@@ -63,14 +61,14 @@ public class UDPServer : MonoBehaviour
         receiveThread.IsBackground = true;
         receiveThread.Start();
 
-        textIO.CreateFile(); // Creates a new textfile
+        //textIO.CreateFile(); // Creates a new textfile
     }
 
     //Loop to update the seen if new gameobject are being created
     void Update()
     {
         dispatcher.InvokePending();
-        //CheckActivityStatus();
+        CheckActivityStatus();
     }
 
     // Displays info on the GUI
@@ -84,7 +82,6 @@ public class UDPServer : MonoBehaviour
                     + "Server Port : " + port + " \n"
                     + "\nLast client IP : " + lastClientIP + " \n"
                     + "Last client Port : " + lastClientPort + " \n"
-                    + "\nLast Packet: \n" + lastUDPdecoded
                     + "\nMessage in hex :\n" + dataString
                 , style);
     }
@@ -106,17 +103,11 @@ public class UDPServer : MonoBehaviour
                 if (data.Length == 4) // if the packet received is not equal to 4 bytes (32 bits), the packet is discarded
                 {
                     // The action of creating or updating the weapons happens in the main thread.
-                    Action<IPEndPoint, byte[]> action = new Action<IPEndPoint, byte[]>(CreateScar); //The action is created  
+                    Action<IPEndPoint, byte[]> action = new Action<IPEndPoint, byte[]>(CreateWeapon); //The action is created  
                     dispatcher.Invoke(action, clientEndpoint, data); // The action is send to the dispatcher to be executed in the main thread (UDPServer.Update())
-
-                    // Convert bytes in a string
-                    lastUDPdecoded = Encoding.UTF8.GetString(data);
 
                     // Gives a hex representation of the data in String form
                     dataString = ByteArrayToString(data); // gives a hex representation of the data (handy for debugging purposes)
-
-                    // Log data in .txt file
-                    textIO.WriteTextFile(lastClientIP, dataString);
                 }
             }
             catch (Exception err)
@@ -155,15 +146,16 @@ public class UDPServer : MonoBehaviour
     }
 
     // Creates a scar gameobject if it does not exist and updates the object with the new data
-    private void CreateScar(IPEndPoint clientEndpoint, byte[] data)
+    private void CreateWeapon(IPEndPoint clientEndpoint, byte[] data)
     {
         try
         {
             //If client connects for the first time a new GameObject is made and the sending IPadress is linked together in the dictionary
             if (!clients.TryGetValue(clientEndpoint.Address, out GameObject weapon))
             {
-                GameObject prefab = prefabSCAR; 
-                switch (WeaponInteraction.GetWeaponTypeOutOfData(data))
+                GameObject prefab = prefabSCAR;
+                WeaponType weaponType = WeaponInteraction.GetWeaponTypeOutOfData(data);
+                switch (weaponType)
                 {
                     case WeaponType.SCAR:
                         prefab = prefabSCAR;
@@ -181,17 +173,26 @@ public class UDPServer : MonoBehaviour
                 weapon = Instantiate(prefab, GetNewPosition(), Quaternion.identity);
                 // Add IPaddress as key and new gameobject as value to the dictionary clients
                 clients.Add(clientEndpoint.Address, weapon);
-                // Add timestamp of last received message to the dictionary timestamps
-                timestamps.Add(clientEndpoint.Address, DateTime.Now);
+
+                // Set the weapon type field of the created weapon
+                weapon.GetComponent<WeaponInteraction>().SetWeaponType(weaponType);
+                // Set IP address in weapon component
+                weapon.GetComponent<WeaponInteraction>().SetIPAddress(clientEndpoint.Address);
+                // Make a WriteTextIO instance to log the data received by the weapon in a text file
+                weapon.GetComponent<WeaponInteraction>().SettextIO(weaponType, clientEndpoint.Address);
                 // Modify fields of the new object by the data received by the client
                 weapon.GetComponent<WeaponInteraction>().PacketTranslater(data);
+                // Add timestamp of last weapon update to the dictionary timestamps
+                DateTime lastUpdate = weapon.GetComponent<WeaponInteraction>().GetLastUpdate();
+                timestamps.Add(clientEndpoint.Address, lastUpdate);
             }
             else
             {
                 // Update weapon with new data
                 weapon.GetComponent<WeaponInteraction>().PacketTranslater(data);
-                // Update timestamp of last received packet
-                timestamps[clientEndpoint.Address] = DateTime.Now;
+                // Update timestamp of last weapon updates
+                DateTime lastUpdate = weapon.GetComponent<WeaponInteraction>().GetLastUpdate();
+                timestamps[clientEndpoint.Address] = lastUpdate;
             }
         }
         catch (Exception err)
@@ -211,7 +212,8 @@ public class UDPServer : MonoBehaviour
             }
         }
         foreach (IPAddress IPtoRemove in toRemove)
-        {            if (clients.TryGetValue(IPtoRemove, out GameObject weapon))
+        {            
+            if (clients.TryGetValue(IPtoRemove, out GameObject weapon))
             {
                 clients.Remove(IPtoRemove);
                 timestamps.Remove(IPtoRemove);

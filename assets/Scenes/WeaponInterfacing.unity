@@ -283,9 +283,9 @@ MonoBehaviour:
   dataString: 
   prefabSCAR: {fileID: 6784755091848867138, guid: 5cd0b3687071eff4aa486d3ffec114d7,
     type: 3}
-  prefab57: {fileID: 8797981227128473285, guid: d0512ed5c783343db8b0f62c8eef499a,
+  prefab57: {fileID: 3092274918085744486, guid: d0512ed5c783343db8b0f62c8eef499a,
     type: 3}
-  prefabDEMO: {fileID: 2399830710566636609, guid: 13ce403aa6dd4488ea9d1cd20445fc2b,
+  prefabDEMO: {fileID: 783976157794756198, guid: 0d0c7824b8e7c4cdbaf6413297bbecd4,
     type: 3}
   maxTimeInactive: 5
 --- !u!114 &534669907

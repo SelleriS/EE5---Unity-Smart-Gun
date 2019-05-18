@@ -62,8 +62,8 @@
   <ItemGroup>
     <Compile Include="assets\CameraScript.cs" />
     <Compile Include="assets\Dispatcher.cs" />
+    <Compile Include="assets\Enums.cs" />
     <Compile Include="assets\IDispatcher.cs" />
-    <Compile Include="assets\IWeaponInteraction.cs" />
     <Compile Include="assets\IWriteTextIO.cs" />
     <Compile Include="assets\UDPServer.cs" />
     <Compile Include="assets\WeaponInteraction.cs" />

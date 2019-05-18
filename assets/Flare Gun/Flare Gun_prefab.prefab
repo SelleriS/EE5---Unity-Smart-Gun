@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &1746447842023425341
+--- !u!114 &9068547381522728306
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2399830710566636609}
+  m_GameObject: {fileID: 783976157794756198}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95395ad39c8c8460190cdad81bea75f0, type: 3}
@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerCurrentValue: 0
   weaponType: 2
---- !u!1001 &2399830710566537957
+--- !u!1001 &783976157794721986
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -23,7 +23,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
       propertyPath: m_Name
-      value: Flare Gun Variant
+      value: Flare Gun_prefab
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
       propertyPath: m_LocalPosition.x
@@ -69,23 +69,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.02
+    - target: {fileID: 400010, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.6427876
       objectReference: {fileID: 0}
-    - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.02
+    - target: {fileID: 400010, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7660445
       objectReference: {fileID: 0}
-    - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.02
+    - target: {fileID: 400010, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.00000018054635
+      objectReference: {fileID: 0}
+    - target: {fileID: 400010, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.00000021516679
+      objectReference: {fileID: 0}
+    - target: {fileID: 400010, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 179.99998
+      objectReference: {fileID: 0}
+    - target: {fileID: 400010, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 80
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
---- !u!1 &2399830710566636609 stripped
+--- !u!1 &783976157794756198 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100004, guid: b4c6e925126c944b88df1172db7aec81,
     type: 3}
-  m_PrefabInstance: {fileID: 2399830710566537957}
+  m_PrefabInstance: {fileID: 783976157794721986}
   m_PrefabAsset: {fileID: 0}

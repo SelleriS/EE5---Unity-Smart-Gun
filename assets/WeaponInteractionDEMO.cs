@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * This class is attached to the Flare Gun prefab and is responsible to apply
+ * the received changes to it.
+ * Only the trigger is implemented. (SetTrigger from the parent class will be executed)
+ */
+
 public class WeaponInteractionDEMO : WeaponInteraction
 {
-    // Start is called before the first frame update
+    // Start is called before the first frame update and will set specific transformation parameters 
     void Start()
     {
         triggerMinRot = 110;
         triggerMaxRot = 80;
         triggerTransform = transform.Find("Plane.003").transform;
-        Vector3 currPos = transform.position;
-        Vector3 offset = new Vector3(0.17f, -0.1f, 0); // Estimated by looking at the specific flare gun prefab
-        transform.position = currPos + offset;
     }
 }
