@@ -279,7 +279,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverIP: 
   port: 0
-  lastUDPdecoded: 
   dataString: 
   prefabSCAR: {fileID: 6784755091848867138, guid: 5cd0b3687071eff4aa486d3ffec114d7,
     type: 3}

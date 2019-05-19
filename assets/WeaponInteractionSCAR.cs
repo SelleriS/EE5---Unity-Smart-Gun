@@ -15,10 +15,9 @@ using UnityEngine;
 
 public class WeaponInteractionSCAR :WeaponInteraction
 { 
-    Transform movablePiecesTransform;
-    Transform selectorSwitchTransform;
-    GameObject magazineObject;
-
+    private Transform movablePiecesTransform;
+    private Transform selectorSwitchTransform;
+    private GameObject magazineObject;
     private readonly float movablePiecesMaxXpos = 0.117f;
 
     // Start is called before the first frame update
@@ -55,11 +54,11 @@ public class WeaponInteractionSCAR :WeaponInteraction
         switch (switchPosition)
         {
             case SwitchPosition.SAFE:
-                selectorSwitchTransform.eulerAngles = new Vector3(0, 0, 30);
+                selectorSwitchTransform.localEulerAngles = new Vector3(0, 0, 30);
                 break;
 
             case SwitchPosition.SEMI:
-                selectorSwitchTransform.eulerAngles = new Vector3(0, 0, 0);
+                selectorSwitchTransform.localEulerAngles = new Vector3(0, 0, 0);
                 break;
 
             case SwitchPosition.AUTO:

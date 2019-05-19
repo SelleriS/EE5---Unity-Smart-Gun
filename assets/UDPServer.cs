@@ -60,8 +60,6 @@ public class UDPServer : MonoBehaviour
             new ThreadStart(ReceiveData));
         receiveThread.IsBackground = true;
         receiveThread.Start();
-
-        //textIO.CreateFile(); // Creates a new textfile
     }
 
     //Loop to update the seen if new gameobject are being created

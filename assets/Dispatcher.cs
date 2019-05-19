@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 
-public class Dispatcher : IDispatcher
+public class Dispatcher
 {
-    public List<Action<IPEndPoint, byte[]>> pending = new List<Action<IPEndPoint, byte[]>>();
-    public List<IPEndPoint> pendingIPs = new List<IPEndPoint>();
-    public List<byte[]> pendingData = new List<byte[]>();
+    private List<Action<IPEndPoint, byte[]>> pending = new List<Action<IPEndPoint, byte[]>>();
+    private List<IPEndPoint> pendingIPs = new List<IPEndPoint>();
+    private List<byte[]> pendingData = new List<byte[]>();
     private static Dispatcher instance;
 
     // Schedule code for execution in the main-thread.

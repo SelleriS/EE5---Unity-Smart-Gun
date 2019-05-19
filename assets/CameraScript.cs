@@ -7,22 +7,21 @@ public class CameraScript : MonoBehaviour
     public float speed = 2.0f;
     public float zoomSpeed = 2.0f;
 
+    public float sensX = 300.0f;
+    public float sensY = 300.0f;
+
     //private float minX = -360.0f;
     //private float maxX = 360.0f;
 
     private float minY = -45.0f;
     private float maxY = 45.0f;
 
-    public float sensX = 300.0f;
-    public float sensY = 300.0f;
-
-    float rotationY = 0.0f;
-    float rotationX = 0.0f;
+    private float rotationY = 0.0f;
+    private float rotationX = 0.0f;
 
     // Use this for initialization
     void Start()
     {
-
     }
 
     // Update is called once per frame

@@ -27,13 +27,11 @@ public abstract class WeaponInteraction : MonoBehaviour
     public int magazineID;
 
     protected Transform triggerTransform;
-
     protected float triggerMinRot;
     protected float triggerMaxRot;
 
     private WriteTextIO textIO;
     private DateTime lastUpdate; // Used to check if a weapon has been active
-
     private static int weaponTypesBits;
 
     // Update is called once per frame. By default only the trigger gets
@@ -125,7 +123,7 @@ public abstract class WeaponInteraction : MonoBehaviour
         this.ipAddress = ipAddress;
     }
 
-    public void SettextIO(WeaponType weaponType, IPAddress iPAddress)
+    public void SettextIO(WeaponType weaponType, IPAddress IPAddress)
     {
         textIO = new WriteTextIO(weaponType.ToString(), ipAddress.ToString());
     }
