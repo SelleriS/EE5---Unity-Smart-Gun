@@ -66,8 +66,7 @@ public class WeaponInteraction57 : WeaponInteraction
                 selectorSwitchLTransform.localEulerAngles = new Vector3(selectorSwitchMaxRot, selectorSwitchLTransform.localEulerAngles.y, selectorSwitchLTransform.localEulerAngles.z);
                 selectorSwitchRTransform.localEulerAngles = new Vector3(selectorSwitchMaxRot, selectorSwitchRTransform.localEulerAngles.y, selectorSwitchRTransform.localEulerAngles.z);
                 break;
-
-            case SwitchPosition.AUTO:
+            case SwitchPosition.AUTO: // Same as SEMI, because there is no AUTO mode on a Five Seven
                 selectorSwitchLTransform.localEulerAngles = new Vector3(selectorSwitchMaxRot, selectorSwitchLTransform.localEulerAngles.y, selectorSwitchLTransform.localEulerAngles.z);
                 selectorSwitchRTransform.localEulerAngles = new Vector3(selectorSwitchMaxRot, selectorSwitchRTransform.localEulerAngles.y, selectorSwitchRTransform.localEulerAngles.z);
                 break;

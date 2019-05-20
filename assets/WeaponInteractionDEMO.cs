@@ -13,7 +13,7 @@ public class WeaponInteractionDEMO : WeaponInteraction
     // Start is called before the first frame update and will set specific transformation parameters 
     void Start()
     {
-        triggerMinRot = 110;
+        triggerMinRot = 130;
         triggerMaxRot = 80;
         triggerTransform = transform.Find("Plane.003").transform;
     }

@@ -23,7 +23,7 @@ public class WeaponInteractionSCAR :WeaponInteraction
     // Start is called before the first frame update
     void Start()
     {
-        triggerMinRot = 0;
+        triggerMinRot = -15;
         triggerMaxRot = 15;
         triggerTransform = transform.Find("Trigger").transform;
         movablePiecesTransform = transform.Find("Movable Pieces").transform;

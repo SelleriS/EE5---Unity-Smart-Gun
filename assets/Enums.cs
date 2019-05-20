@@ -12,7 +12,7 @@ public enum SwitchPosition
 // types of weapons that can be recognized: max. 2 to the power of 6 different weapons
 public enum WeaponType
 {
-    SCAR,
+    DEMO,
     FiveSeven,
-    DEMO
+    SCAR
 }
