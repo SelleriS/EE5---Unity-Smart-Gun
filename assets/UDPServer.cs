@@ -32,6 +32,7 @@ public class UDPServer : MonoBehaviour
     public GameObject prefab57;
     public GameObject prefabDEMO;
     public int maxTimeInactive = 5; // Used to destroy a gameobject if its clients has been inactive for this amount of seconds
+    public bool chargeAllMagazines;
 
     private string lastClientIP;
     private int lastClientPort;
@@ -67,6 +68,7 @@ public class UDPServer : MonoBehaviour
     {
         dispatcher.InvokePending();
         CheckActivityStatus();
+        ChargeAllMags();
     }
 
     // Displays info on the GUI
@@ -177,7 +179,7 @@ public class UDPServer : MonoBehaviour
                 // Set IP address in weapon component
                 weapon.GetComponent<WeaponInteraction>().SetIPAddress(clientEndpoint.Address);
                 // Make a WriteTextIO instance to log the data received by the weapon in a text file
-                weapon.GetComponent<WeaponInteraction>().SettextIO(weaponType, clientEndpoint.Address);
+                weapon.GetComponent<WeaponInteraction>().SetTextIO(weaponType, clientEndpoint.Address);
                 // Modify fields of the new object by the data received by the client
                 weapon.GetComponent<WeaponInteraction>().PacketTranslater(data);
                 // Add timestamp of last weapon update to the dictionary timestamps
@@ -240,5 +242,18 @@ public class UDPServer : MonoBehaviour
             }
         }
         return newPosition;
+    }
+
+    private void ChargeAllMags()
+    {
+        if (chargeAllMagazines)
+        {
+            chargeAllMagazines = false;
+            MagazineManager magManager = WeaponInteraction.GetMagazineManager();
+            if (magManager != null)
+            {
+                magManager.ChargeAllMags();
+            }
+        }
     }
 }

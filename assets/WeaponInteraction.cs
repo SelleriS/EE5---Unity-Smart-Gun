@@ -25,10 +25,14 @@ public abstract class WeaponInteraction : MonoBehaviour
     public int movablePiecesCurrentValue;
     public bool magazinePresent;
     public int magazineID;
+    public int amountOfBulletsInMagazine;
+    public bool weaponLoaded; // If the criteria are met to load the weapon and the weapon gets loaded, this variable is set.
 
     protected Transform triggerTransform;
     protected float triggerMinRot;
     protected float triggerMaxRot;
+    protected int shotThreshold; // Every weapon has another threshold. For now this is only relevant for the SCAR because it is the only weapon that can have magazines.
+    protected static MagazineManager magazineManager = new MagazineManager(); // implemented in the parent class in case if other weapons get updated to have the magazine feature
 
     private WriteTextIO textIO;
     private DateTime lastUpdate; // Used to check if a weapon has been active
@@ -123,9 +127,34 @@ public abstract class WeaponInteraction : MonoBehaviour
         this.ipAddress = ipAddress;
     }
 
-    public void SettextIO(WeaponType weaponType, IPAddress IPAddress)
+    public void SetTextIO(WeaponType weaponType, IPAddress IPAddress)
     {
         textIO = new WriteTextIO(weaponType.ToString(), ipAddress.ToString());
     }
+
+    public static MagazineManager GetMagazineManager()
+    {
+        return magazineManager;
+    }
+
+    public void SetAmountOfBulletsInMagazine(int magazineID)
+    {
+        amountOfBulletsInMagazine = magazineManager.GetBulletsLeft(magazineID);
+    }
+
+    protected void SetWeaponLoaded()
+    {
+        if (magazinePresent && amountOfBulletsInMagazine > 0)
+        {
+            weaponLoaded = true; // If a magazine is present with bullets left and the cocking handle has been pulled completely and released completely, the weapon can be loaded
+            magazineManager.DecrementBulletCount(magazineID); // When a weapon gets loaded, a bullet is loaded into the chamber and thus removed from the magazine
+        }
+        else
+        {
+            weaponLoaded = false;
+        }
+
+    }
+
 
 }

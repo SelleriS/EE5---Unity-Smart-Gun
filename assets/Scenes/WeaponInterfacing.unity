@@ -287,6 +287,7 @@ MonoBehaviour:
   prefabDEMO: {fileID: 783976157794756198, guid: 0d0c7824b8e7c4cdbaf6413297bbecd4,
     type: 3}
   maxTimeInactive: 5
+  chargeAllMagazines: 0
 --- !u!114 &534669907
 MonoBehaviour:
   m_ObjectHideFlags: 0
